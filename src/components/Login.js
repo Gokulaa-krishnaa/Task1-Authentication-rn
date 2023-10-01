@@ -3,7 +3,7 @@ import { Button, Text, TextInput,SafeAreaView,StyleSheet,View,TouchableOpacity, 
 // import LinearGradient from 'react-native-linear-gradient';
 
 
-function Login(){
+function Login({navigation}){
     const [text, onChangeText]=useState();
     const [number,onChangeNumber]=useState();
 
@@ -27,11 +27,15 @@ function Login(){
                     placeholder="Password"
                 />
 
-        <TouchableOpacity style={styles.loginButton} >
+        <TouchableOpacity style={styles.loginButton} onPress={() =>
+        navigation.navigate('Register')
+      }>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
         <Text style={styles.signuptext} >
-            Don't have an account?<Text style={styles.signuplink}> Join us</Text>
+            Don't have an account?<Text style={styles.signuplink} onPress={() =>
+        navigation.navigate('Register')
+      }> Join us</Text>
         </Text>
             </View>
             {/* </LinearGradient> */}

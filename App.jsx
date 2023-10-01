@@ -1,12 +1,7 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-// import type {PropsWithChildren} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -27,10 +22,7 @@ import {
 import Login from './src/components/Login';
 import Register from './src/components/Register';
 
-// type SectionProps = PropsWithChildren<{
-//   title: string;
-// }>;
-
+const Stack = createNativeStackNavigator();
 
 function App(){
   const isDarkMode = useColorScheme() === 'dark';
@@ -40,18 +32,25 @@ function App(){
   };
 
   return (
-    // <SafeAreaView style={backgroundStyle}>
-    //   <StatusBar
-    //     barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-    //     backgroundColor={backgroundStyle.backgroundColor}
-    //   />
-      <>
-    {/* //     contentInsetAdjustmentBehavior="automatic" */}
-    {/* //     style={backgroundStyle}> */}
-        {/* <Login /> */}
-        <Register />
-      </>
-    // </SafeAreaView>
+    
+    <NavigationContainer > 
+    <View style={styles.appContainer}>
+      <Stack.Navigator >
+        
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+        name="Register"
+        component={Register}
+        options={{ headerShown: false }} />
+      </Stack.Navigator>    
+    </View>
+
+    </NavigationContainer>
+    
   );
 }
 
@@ -72,6 +71,10 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  appContainer:{
+    flex: 1,
+    backgroundColor:'black'
+  }
 });
 
 export default App;

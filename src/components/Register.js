@@ -4,9 +4,11 @@ import { RadioButton} from 'react-native-paper';
 import  CheckBox from "@react-native-community/checkbox";
 import { useState, useEffect } from "react";
 import DatePicker from "react-native-date-picker";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
-function Register(){
+
+function Register({navigation}){
 
     function validation() {
         if (Username === '-' || Password === '-' || Emailid === '-' || selectedDate == 'Click here' || isSelected == false) {
@@ -58,149 +60,166 @@ function Register(){
 
 
     return(
-
-        <SafeAreaView style={styles.container}>
-            <Image
-                style={styles.logo}
-                source={require('../data/Logo_login.png')}
-            />
-            <View style={styles.input_box}>
-                <Text style={styles.Signup}>Sign up</Text>
-                <Text style={styles.Welcome_text}>Please sign in to continue</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Username"
-                    onChangeText={(e)=>{setUsername(e)}}
-                />
-                {Username=='' ? <Text style={styles.Warning}>This field need to be filled</Text> : <View /> }
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    onChangeText={(e)=>setEmailid(e)}
-                />
-                {Emailid=='' ? <Text style={styles.Warning}>This field need to be filled</Text> : <View /> }
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    onChangeText={(e)=>settPassword(e)}
-                />
-                
-                {tPassword=='' ? (<Text style={styles.Warning}>This field need to be filled</Text>) :
-                (!checkPassword(tPassword) && tPassword!='-'?
-                ( <Text style={styles.Warning}>Password doesn't match the requirement</Text>)
-                :( <View />) 
-                )}
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Confirm Password"
-                    onChangeText={(e) => {
-                        setCheckVal(e);
-                        if (checkPasswordConfirmation(tPassword, e)) {
-                            setPassword(e); // Passwords match, set the email
-                            setCPasswordWarning('Password Matched'); // Clear any previous password warning
-                        } else {
-                            setCPasswordWarning('Password must match');
-                        }
-                    }}
-                />
-                {CheckVal ? (
-                    <Text style={CPasswordWarning === "Password Matched" ? styles.NoWarning : styles.Warning}>
-                        {CPasswordWarning}
-                    </Text>
-                    ) : (
-                    Password === '' ? (
-                        <Text style={styles.Warning}>This field needs to be filled</Text>
-                    ) : (
-                        <View />
-                    )
-                )}
-
-
-                <Text>Gender:</Text>
-                <View style={styles.Radiobuttons}>
+        <View style={styles.bg}>
+        <Image
+        style={styles.logo}
+        source={require('../data/Logo_login.png')}
+    />
+            <KeyboardAwareScrollView
+                resetScrollToCoords={{ x: 0, y: 0 }}
+                scrollEnabled={true}
+                style={styles.container}
+                >
                     
-                    <RadioButton
-                        value="Binary"
-                        status={ Gender === 'Male' ? 'checked' : 'unchecked' }
-                        style={styles.Radiobuttons}
-                        color="#00C9C8"
-                        onPress={() => setGender('Male')}
-
-                    /><Text style={styles.radiotext}>Male</Text>
-                    <RadioButton
-                        value="Male"
-                        placeholder="Male"
-                        status={ Gender === 'Female' ? 'checked' : 'unchecked' }
-                        style={styles.Radiobuttons}
-                        color="#00C9C8"
-                        onPress={() => setGender('Female')
-                    }
-                    /><Text style={styles.radiotext}>Female</Text>
-                    <RadioButton
-                        value="Female"
-                        status={ Gender === 'Binary' ? 'checked' : 'unchecked' }
-                        style={styles.Radiobuttons}
-                        color="#00C9C8"
-                        onPress={() => setGender('Binary')
-                }
-                    /><Text style={styles.radiotext}>Binary</Text>
-                    
-                </View>
-                
-                <View style={styles.Radiobuttons}>
-                    <Text style={styles.Datelabel}>Set Date of birth:</Text>
-                    <TouchableOpacity style={styles.DateButton} onPress={() => setOpen(true)} ><Text style={styles.DateButtonText}>{ selectedDate=="" ? "Click here" : selectedDate}</Text></TouchableOpacity>
-                    <DatePicker
-                        modal
-                        open={open}
-                        mode="date"
-                        date={date}
-                        textColor="#00C9C8"
-                        onConfirm={(date) => {
-                        setOpen(false)
-                        setDate(date)
-                        setSelectedDate(date.toString().slice(4,15))
-                        }}
-                    onCancel={() => {
-                    setOpen(false)
-                    setSelectedDate('Click here')
-                    }}
-                />
-                </View>
-                {selectedDate=='' ? <Text style={styles.Warning}>This field need to be filled</Text> : <View /> }
-
-                <View style={styles.checkboxContainer}>
-                    <CheckBox
-                    value={isSelected}
-                    onValueChange={setSelection}
-                    style={styles.checkbox}
-                    />
-                    <Text style={styles.label}>Do you like React Native?</Text>
-                </View>
-
-        {Valid ? (<TouchableOpacity style={styles.loginButton} >
-          <Text  style={styles.loginButtonText} onPress={validation}>Sign up</Text>
-        </TouchableOpacity>) :
-        (<TouchableOpacity disabled style={styles.dloginButton} >
-            <Text  style={styles.loginButtonText} onPress={validation}>Sign up</Text>
-          </TouchableOpacity>) } 
-        <Text style={styles.signuptext} >
-            Already have an account? <Text style={styles.signuplink}> Sign in</Text>
-        </Text>
-            </View>
-            
-
+                  
        
-        </SafeAreaView>
-        
-        
+          
+           <View style={styles.input_box}>
+            
+               <Text style={styles.Signup}>Sign up</Text>
+               <Text style={styles.Welcome_text}>Please sign in to continue</Text>
+               <TextInput
+                   style={styles.input}
+                   placeholder="Username"
+                   onChangeText={(e)=>{setUsername(e)}}
+               />
+               {Username=='' ? <Text style={styles.Warning}>This field need to be filled</Text> : <View /> }
+               <TextInput
+                   style={styles.input}
+                   placeholder="Email"
+                   onChangeText={(e)=>setEmailid(e)}
+               />
+               {Emailid=='' ? <Text style={styles.Warning}>This field need to be filled</Text> : <View /> }
+
+               <TextInput
+                   style={styles.input}
+                   placeholder="Password"
+                   onChangeText={(e)=>settPassword(e)}
+               />
+               
+               {tPassword=='' ? (<Text style={styles.Warning}>This field need to be filled</Text>) :
+               (!checkPassword(tPassword) && tPassword!='-'?
+               ( <Text style={styles.Warning}>Password doesn't match the requirement</Text>)
+               :( <View />) 
+               )}
+
+               <TextInput
+                   style={styles.input}
+                   placeholder="Confirm Password"
+                   onChangeText={(e) => {
+                       setCheckVal(e);
+                       if (checkPasswordConfirmation(tPassword, e)) {
+                           setPassword(e); // Passwords match, set the email
+                           setCPasswordWarning('Password Matched'); // Clear any previous password warning
+                       } else {
+                           setCPasswordWarning('Password must match');
+                       }
+                   }}
+               />
+               {CheckVal ? (
+                   <Text style={CPasswordWarning === "Password Matched" ? styles.NoWarning : styles.Warning}>
+                       {CPasswordWarning}
+                   </Text>
+                   ) : (
+                   Password === '' ? (
+                       <Text style={styles.Warning}>This field needs to be filled</Text>
+                   ) : (
+                       <View />
+                   )
+               )}
+
+
+               <Text>Gender:</Text>
+               <View style={styles.Radiobuttons}>
+                   
+                   <RadioButton
+                       value="Binary"
+                       status={ Gender === 'Male' ? 'checked' : 'unchecked' }
+                       style={styles.Radiobuttons}
+                       color="#00C9C8"
+                       onPress={() => setGender('Male')}
+
+                   /><Text style={styles.radiotext}>Male</Text>
+                   <RadioButton
+                       value="Male"
+                       placeholder="Male"
+                       status={ Gender === 'Female' ? 'checked' : 'unchecked' }
+                       style={styles.Radiobuttons}
+                       color="#00C9C8"
+                       onPress={() => setGender('Female')
+                   }
+                   /><Text style={styles.radiotext}>Female</Text>
+                   <RadioButton
+                       value="Female"
+                       status={ Gender === 'Binary' ? 'checked' : 'unchecked' }
+                       style={styles.Radiobuttons}
+                       color="#00C9C8"
+                       onPress={() => setGender('Binary')
+               }
+                   /><Text style={styles.radiotext}>Binary</Text>
+                   
+               </View>
+               
+               <View style={styles.Radiobuttons}>
+                   <Text style={styles.Datelabel}>Set Date of birth:</Text>
+                   <TouchableOpacity style={styles.DateButton} onPress={() => setOpen(true)} ><Text style={styles.DateButtonText}>{ selectedDate=="" ? "Click here" : selectedDate}</Text></TouchableOpacity>
+                   <DatePicker
+                       modal
+                       open={open}
+                       mode="date"
+                       date={date}
+                       textColor="#00C9C8"
+                       onConfirm={(date) => {
+                       setOpen(false)
+                       setDate(date)
+                       setSelectedDate(date.toString().slice(4,15))
+                       }}
+                   onCancel={() => {
+                   setOpen(false)
+                   setSelectedDate('Click here')
+                   }}
+               />
+               </View>
+               {selectedDate=='' ? <Text style={styles.Warning}>This field need to be filled</Text> : <View /> }
+
+               <View style={styles.checkboxContainer}>
+                   <CheckBox
+                   value={isSelected}
+                   onValueChange={setSelection}
+                   style={styles.checkbox}
+                   />
+                   <Text style={styles.label}>Do you like React Native?</Text>
+               </View>
+
+       {Valid ? (<TouchableOpacity style={styles.loginButton} onPress={() =>
+        navigation.navigate('Login')
+      }  >
+         <Text  style={styles.loginButtonText} onPress={validation}>Sign up</Text>
+       </TouchableOpacity>) :
+       (<TouchableOpacity disabled style={styles.dloginButton} >
+           <Text  style={styles.loginButtonText} onPress={validation}>Sign up</Text>
+         </TouchableOpacity>) } 
+       <Text style={styles.signuptext} >
+           Already have an account? <Text style={styles.signuplink} onPress={() =>
+        navigation.navigate('Login')
+      }> Sign in</Text>
+       </Text>
+           </View>
+           
+
+    
+      
+       </KeyboardAwareScrollView>
+       </View>
     )
 }
 
 const styles = StyleSheet.create({
 
+    bg:{
+        // flex: 1,
+        backgroundColor:'black'
+      },
     Signup:{
         fontSize:30,
         fontWeight:"bold",
@@ -214,9 +233,10 @@ const styles = StyleSheet.create({
 
     container:{
         padding:30,
-        backgroundColor:"#000000",
+        // backgroundColor:"#000000",
         height:"100%",
-       
+       width:"100%",
+       zIndex:15,
     },
 
     Datelabel:{
@@ -287,8 +307,9 @@ const styles = StyleSheet.create({
         position:"absolute",
         width: 300, 
         height: 200, 
-        marginLeft:100,
-        resizeMode: "contain",
+        marginLeft:110,
+        marginTop:-5,
+        resizeMode: "cover",
     },
       
     NoWarning:{
