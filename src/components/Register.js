@@ -1,28 +1,45 @@
 import React from "react";
 import { Button, Text, TextInput, StyleSheet,SafeAreaView,View,TouchableOpacity,Image } from "react-native";
-import { RadioButton } from 'react-native-paper';
-import { useState } from "react";
+import { RadioButton} from 'react-native-paper';
+import  CheckBox from "@react-native-community/checkbox";
+import { useState, useEffect } from "react";
 import DatePicker from "react-native-date-picker";
 
 
 function Register(){
 
-    const validation= () =>{
-
-    }
+    function validation() {
+        if (Username === '-' || Password === '-' || Emailid === '-' || selectedDate == 'Click here' || isSelected == false) {
+          return false; 
+        }
+      
+        if (!checkPassword(tPassword)) {
+          return false; 
+        }
+      
+        if (!checkPasswordConfirmation(tPassword, CheckVal)) {
+          return false;
+        }
+      
+        return true; 
+      }
+      
 
     const [Username,setUsername]=useState('-')
     const [Emailid,setEmailid]=useState('-')
     const [tPassword,settPassword]=useState('-')
     const [Password,setPassword]=useState('-')
     const [Gender, setGender] = useState('Male');
-    const [CPasswordWarning,setCPasswordWarning]=useState('-')
-    const [PasswordWarning,setPasswordWarning]=useState('-')
+    const [CPasswordWarning,setCPasswordWarning]=useState('')
     const [CheckVal,setCheckVal]=useState('-')
+
+    const [Valid,setValid]=useState(false)
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
-    const [selectedDate,setSelectedDate]=useState("");
+    const [selectedDate,setSelectedDate]=useState("Click here");
+
+    const [isSelected, setSelection] = useState(false);
 
     function checkPasswordConfirmation(tPassword,confirmpassword){
         if (tPassword==confirmpassword)
@@ -33,6 +50,11 @@ function Register(){
     function checkPassword(password){
         return /^(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-])(?=.*[A-Z])(?=.*[0-9]).{8,}$/.test(password)
     }
+
+    useEffect(() => {
+        setValid(validation());
+        checkPasswordConfirmation(tPassword,Password)
+      });
 
 
     return(
@@ -48,7 +70,7 @@ function Register(){
                 <TextInput
                     style={styles.input}
                     placeholder="Username"
-                    onChangeText={(e)=>{setUsername(e);setNameCheck(e)}}
+                    onChangeText={(e)=>{setUsername(e)}}
                 />
                 {Username=='' ? <Text style={styles.Warning}>This field need to be filled</Text> : <View /> }
                 <TextInput
@@ -63,9 +85,9 @@ function Register(){
                     placeholder="Password"
                     onChangeText={(e)=>settPassword(e)}
                 />
-                {/* {PasswordWarning!="" ? (<Text></Text>) :<View />} */}
+                
                 {tPassword=='' ? (<Text style={styles.Warning}>This field need to be filled</Text>) :
-                (!checkPassword(tPassword) ?
+                (!checkPassword(tPassword) && tPassword!='-'?
                 ( <Text style={styles.Warning}>Password doesn't match the requirement</Text>)
                 :( <View />) 
                 )}
@@ -143,17 +165,27 @@ function Register(){
                         }}
                     onCancel={() => {
                     setOpen(false)
-                    setSelectedDate('')
+                    setSelectedDate('Click here')
                     }}
                 />
                 </View>
                 {selectedDate=='' ? <Text style={styles.Warning}>This field need to be filled</Text> : <View /> }
 
-               
+                <View style={styles.checkboxContainer}>
+                    <CheckBox
+                    value={isSelected}
+                    onValueChange={setSelection}
+                    style={styles.checkbox}
+                    />
+                    <Text style={styles.label}>Do you like React Native?</Text>
+                </View>
 
-        <TouchableOpacity style={styles.loginButton} >
-          <Text style={styles.loginButtonText}>Sign up</Text>
-        </TouchableOpacity>
+        {Valid ? (<TouchableOpacity style={styles.loginButton} >
+          <Text  style={styles.loginButtonText} onPress={validation}>Sign up</Text>
+        </TouchableOpacity>) :
+        (<TouchableOpacity disabled style={styles.dloginButton} >
+            <Text  style={styles.loginButtonText} onPress={validation}>Sign up</Text>
+          </TouchableOpacity>) } 
         <Text style={styles.signuptext} >
             Already have an account? <Text style={styles.signuplink}> Sign in</Text>
         </Text>
@@ -236,6 +268,15 @@ const styles = StyleSheet.create({
         width:'100%',
         marginTop:20,
       },
+      dloginButton:{
+        backgroundColor: '#adadad',
+        alignItems: 'center',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 5,
+        width:'100%',
+        marginTop:20,
+      },
       loginButtonText: {
         color: '#ffffff',
         fontWeight: 'bold',
@@ -282,6 +323,16 @@ const styles = StyleSheet.create({
         color:'#00C9C8',
         fontWeight:'bold',
     },
+    checkboxContainer: {
+        flexDirection: 'row',
+        marginBottom: 20,
+      },
+      checkbox: {
+        alignSelf: 'center',
+      },
+      label: {
+        margin: 8,
+      },
     
     
   });
