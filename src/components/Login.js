@@ -1,6 +1,7 @@
 import React, { cloneElement, useState } from "react";
 import { Button, Text, TextInput,SafeAreaView,StyleSheet,View,TouchableOpacity, Image } from "react-native";
 // import LinearGradient from 'react-native-linear-gradient';
+import { BlurView } from "@react-native-community/blur";
 
 
 function Login({navigation}){
@@ -11,6 +12,7 @@ function Login({navigation}){
     
         <SafeAreaView style={styles.container}>
             {/* <LinearGradient > */}
+            <BlurView style={styles.blurContainer} blurType="dark" blurAmount={5}  >
             <View style={styles.input_box}>
                 <Text style={styles.Signin}>Login</Text>
                 <Text style={styles.Welcome_text}>Please sign in to continue</Text>
@@ -38,6 +40,7 @@ function Login({navigation}){
       }> Join us</Text>
         </Text>
             </View>
+            </BlurView>
             {/* </LinearGradient> */}
 
         <View >

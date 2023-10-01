@@ -5,6 +5,7 @@ import  CheckBox from "@react-native-community/checkbox";
 import { useState, useEffect } from "react";
 import DatePicker from "react-native-date-picker";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { BlurView } from "@react-native-community/blur";
 
 
 
@@ -73,7 +74,8 @@ function Register({navigation}){
                     
                   
        
-          
+                    <BlurView style={styles.blurContainer} blurType="dark" blurAmount={8} 
+ >
            <View style={styles.input_box}>
             
                <Text style={styles.Signup}>Sign up</Text>
@@ -205,6 +207,7 @@ function Register({navigation}){
       }> Sign in</Text>
        </Text>
            </View>
+        </BlurView>
            
 
     
@@ -242,7 +245,9 @@ const styles = StyleSheet.create({
     Datelabel:{
         marginTop:6,
     },
-
+    blurContainer: {
+        borderRadius: 10,
+      },
     input_box: {
         zIndex:5,
         flex:0,
