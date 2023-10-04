@@ -1,6 +1,8 @@
 import React ,{ useState, useEffect }from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import {
   SafeAreaView,
@@ -19,11 +21,17 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import SplashScreen from 'react-native-splash-screen';
+
+
+
 import Login from './src/components/Login';
 import Register from './src/components/Register';
 import Home from './src/components/Home';
 
 import SQLite from 'react-native-sqlite-storage';
+import CustomSplash from './CustomSplash';
 
 
 const Stack = createNativeStackNavigator();
@@ -34,6 +42,8 @@ function App(){
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  const [directHome,setDirectHome]=useState(false)
 
   const db = SQLite.openDatabase({
     name: 'mydb',
@@ -55,6 +65,7 @@ function App(){
  
   useEffect(() => {
       createUserTable(); //call create table function here
+      getUserDetailAsync(1)
   },[])
   //create table function
   const createUserTable = () => {
@@ -83,7 +94,22 @@ function App(){
   };
   
   // Call the function to reset the table
-  
+  const getUserDetailAsync = async (userId) => {
+ 
+    try {
+      const userToken = await AsyncStorage.getItem('userDetails');
+      if (userToken !== null) {
+        console.log('User Token:', JSON.parse(userToken).DOB)
+        setDirectHome(true)
+      } else {
+        console.log('User Token not found');
+        setDirectHome(false)
+      }
+    } catch (error) {
+      console.error('Error retrieving data:', error);
+    }
+  };
+
   
 
   return (
@@ -91,39 +117,28 @@ function App(){
     <NavigationContainer > 
     <View style={styles.appContainer}>
       <Stack.Navigator >
+        <Stack.Screen
+          name="Splash"
+          component={CustomSplash}
+          options={{ headerShown: false }}
+        />
         
         <Stack.Screen
           name="Login"
           component={Login}
-          options={({ route }) => ({
-            headerShown: false,
-            // Pass props to the component using the route object
-            // You can add any props you want to pass here
-            // For example, if you want to pass a prop called "db":
-            db: route.params?.db, // Assuming db is the prop you want to pass
-          })}
+          options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />  
         <Stack.Screen 
         name="Register"
         component={Register}
-        options={({ route }) => ({
-          headerShown: false,
-          // Pass props to the component using the route object
-          // You can add any props you want to pass here
-          // For example, if you want to pass a prop called "db":
-          db: route.params?.db, // Assuming db is the prop you want to pass
-        })}/>
+        options={{  headerShown: false  }}/>
 
-<Stack.Screen 
-        name="Home"
-        component={Home}
-        options={({ route }) => ({
-          headerShown: false,
-          // Pass props to the component using the route object
-          // You can add any props you want to pass here
-          // For example, if you want to pass a prop called "db":
-          db: route.params?.db, // Assuming db is the prop you want to pass
-        })}/>
+      
       </Stack.Navigator>    
     </View>
 

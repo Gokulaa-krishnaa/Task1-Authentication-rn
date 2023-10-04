@@ -3,6 +3,8 @@ import { Text, TextInput, SafeAreaView, StyleSheet, View, TouchableOpacity, Imag
 import LinearGradient from 'react-native-linear-gradient';
 import { BlurView } from "@react-native-community/blur";
 import SQLite from 'react-native-sqlite-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const db = SQLite.openDatabase({
     name: 'mydb',
@@ -35,74 +37,109 @@ const deletetable = () => {
     });
 }
 
-function Home({ navigation ,route }) {
-  const [text, onChangeText] = useState();
-  const [number, onChangeNumber] = useState();
+function Home({ navigation }) {
 
-  const { userId, userName } = route.params;
+// const { userId } = route.params;
+
   
-  const [setUserDetails,userDetails]= useState({});
-  let userdetails;
+const [isLoading, setIsLoading] = useState(true);
+  
+const [userDetails,setUserDetails]= useState();
+ 
 
-  const listUsers = (userId) => {
-    let userdetails;
-    const sql = "SELECT * FROM users WHERE id=?";
-    let params=[userId];
-    console.log(userId)
-    db.transaction(
-      (tx) => {
-        tx.executeSql(
-          sql,
-          params,
-          (_, resultSet) => {
-            if (resultSet.rows.length > 0) {
-              userdetails = resultSet.rows.item(0);
-              console.log(userdetails);
-              setUserDetails({userdetails});
-            } else {
-              console.log('User not found');
-            }
-          },
-          (error) => {
-            console.log('List user error', error);
-            userdetails={"error":"error"}
-          }
-        );
-      },
+const getUserDetailAsync = async (userId) => {
+ 
+  try {
+    const userToken = await AsyncStorage.getItem('userDetails');
+    if (userToken !== null) {
+      console.log('User Token:', JSON.parse(userToken).DOB);
       
-    );}
+      await setUserDetails(JSON.parse(userToken))
+     
+    } else {
+      console.log('User Token not found');
+    }
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+  }
+};
 
-    const listAllUsers = () => {
-        const sql = "SELECT * FROM users";
-        db.transaction(
-          (tx) => {
-            tx.executeSql(
-              sql,
-              [],
-              (_, resultSet) => {
-                const users = [];
-                for (let i = 5; i < resultSet.rows.length; i++) {
-                  console.log(resultSet.rows.item(i));
-                }
-              },
-              (error) => {
-                console.log('List user error', error);
-              }
-            );
-          }
-        );
-      };
 
-      useEffect(() => {
-        listUsers(userId);
-      });
+
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      await getUserDetailAsync();
+     
+      setIsLoading(false); // Set isLoading to false when data is available
+    } catch (error) {
+      console.log("Error fetching user details:", error);
+      setIsLoading(false); // Set isLoading to false on error as well
+    }
+  };fetchData();
+},[]);
+
+  // const listAllUsers = () => {
+  //     const sql = "SELECT * FROM users";
+  //     db.transaction(
+  //       (tx) => {
+  //         tx.executeSql(
+  //           sql,
+  //           [],
+  //           (_, resultSet) => {
+  //             for (let i = 5; i < resultSet.rows.length; i++) {
+  //               console.log(resultSet.rows.item(i));
+  //             }
+  //           },
+  //           (error) => {
+  //             console.log('List user error', error);
+  //           }
+  //         );
+  //       }
+  //     );
+  //   };
+
+    // const [shouldRender, setShouldRender] = useState(false);
+
+  // useEffect(() => {
+  //   // Your async logic here
+  //   setTimeout(() => {
+  //     const fetchData = async () => {
+  //       try {
+  //         const userdetails = await getUserDetailAsync(userId);
+  //         setUserDetails(userdetails);
+  //         setUserDOB(userdetails.DOB); 
+  //         setUserName(userdetails.name); 
+  //         setUserGender(userdetails.gender); 
+  //         setUserEmail(userdetails.email); 
+  //       } catch (error) {
+  //         console.log("Error fetching user details:", error);
+  //       }
+      
     
+  //     fetchData();
+  //   }
+  //     setShouldRender(true);
+  //   }, 1000); // Simulate an async operation
+
+  // }, []);
+
+  if (isLoading) {
+    // Render a loading indicator or message until data is available
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>Loading...</Text>
+      </SafeAreaView>
+    );
+  }
+
 
 
   return (
     <SafeAreaView style={styles.container}>
         <TouchableOpacity
-                  onPress={() => {navigation.navigate("Login")}}
+                  onPress={() => {AsyncStorage.clear();navigation.navigate("Login")}}
                 >
                   <LinearGradient
                     start={{ x: 0, y: 1 }}
@@ -116,7 +153,9 @@ function Home({ navigation ,route }) {
                   </LinearGradient>
                 </TouchableOpacity>
       <Text style={styles.title2}>Welcome,</Text>
-      <Text style={styles.title1}>{userName} </Text>
+      
+      <Text style={styles.title1}> {userDetails.name}</Text>
+
     </SafeAreaView>
   )
 }

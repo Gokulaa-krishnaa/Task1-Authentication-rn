@@ -65,7 +65,7 @@ function Register({ navigation, route }) {
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("Click here");
   const [isSelected, setSelection] = useState(false);
-  const [Userid,setUserid]=useState('-');
+  // const [Userid,setUserid]=useState('-');
 
   // Function to check if password confirmation matches password
   function checkPasswordConfirmation(tPassword, confirmpassword) {
@@ -87,9 +87,8 @@ function Register({ navigation, route }) {
     let params = [Emailid, Username, Password , selectedDate ,Gender]; //storing user data in an array
     // console.log("Added successfully");
     db.executeSql(sql, params, (result) => {
-        // Alert.alert("Success", "User created successfully.");
-        console.log(Userid)
-        setUserid(result.insertId);
+        
+        navigation.navigate('Home',{ userId: result.insertId});
     }, (error) => {
         console.log("Create user error", error);
     });
@@ -272,7 +271,7 @@ function Register({ navigation, route }) {
               {/* Conditional rendering of the Sign Up button */}
               {Valid ? (
                 <TouchableOpacity
-                  onPress={() => {createUser() ; navigation.navigate('Home',{ userId: Userid, userName: Username });}}
+                  onPress={() => {createUser() ; }}
                 >
                   <LinearGradient
                     start={{ x: 0, y: 1 }}

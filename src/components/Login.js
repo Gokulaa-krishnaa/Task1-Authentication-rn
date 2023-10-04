@@ -3,6 +3,8 @@ import { Text, TextInput, SafeAreaView, StyleSheet, View, TouchableOpacity, Imag
 import LinearGradient from 'react-native-linear-gradient';
 import { BlurView } from "@react-native-community/blur";
 import SQLite from 'react-native-sqlite-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const db = SQLite.openDatabase({
     name: 'mydb',
@@ -35,6 +37,7 @@ function Login({ navigation }) {
                 console.log(result.rows.item(0).id);
                 setUserNameWarning('-');
                 checkPassword(emailId,password)
+                
             } else {
                 console.log('User not found');
                 setUserNameWarning('User not found');
@@ -56,7 +59,13 @@ function Login({ navigation }) {
             if (result.rows.length > 0) {
                 console.log(result.rows.item(0));
                 setPasswordWarning('-');
-                navigation.navigate('Home',{ userId: result.rows.item(0).id, userName: result.rows.item(0).name });
+                try {
+                  AsyncStorage.setItem('userDetails', JSON.stringify(result.rows.item(0)));
+                  console.log('Data stored successfully');
+                } catch (error) {
+                  console.error('Error storing data:', error);
+                }
+                navigation.navigate('Home');
             } else {
                 console.log('Passsword is incorrect');
                 setPasswordWarning('Password is incorrect');
