@@ -36,7 +36,7 @@ const CustomSplash = ({ navigation }) => {
   }, [directHome, navigation]);
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={styles.SplashContainer}>
       {/* Add your splash screen content here */}
       <Text>Splash Screen</Text>
       <Image source={require('./src/data/Logo_login.png')} />
@@ -44,4 +44,17 @@ const CustomSplash = ({ navigation }) => {
   );
 };
 
+
+const styles = StyleSheet.create({
+    SplashContainer:{
+         flex: 1,
+          justifyContent: 'center',
+           alignItems: 'center'
+        }
+    
+});
+
+
 export default CustomSplash;
+
+
