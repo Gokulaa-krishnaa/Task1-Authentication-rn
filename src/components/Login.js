@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { BlurView } from "@react-native-community/blur";
 import SQLite from 'react-native-sqlite-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 
 const db = SQLite.openDatabase({
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
     color: '#00C9C8',
     fontWeight: 'bold',
   },
+  
   title2: {
     fontSize: 45,
     color: '#ffffff',
@@ -207,6 +209,7 @@ const styles = StyleSheet.create({
   input_box: {
     justifyContent: "center",
     backgroundColor: "#ffffff32",
+    color:"#ffffff",
     padding: 30,
     paddingVertical: 40,
     borderRadius: 10,

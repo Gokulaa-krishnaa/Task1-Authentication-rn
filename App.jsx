@@ -1,5 +1,7 @@
 import React ,{ useState, useEffect }from 'react';
 import {NavigationContainer} from '@react-navigation/native';
+// import {Navigation} from 'react-native-navigation'y
+import {useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -116,7 +118,7 @@ function App(){
     
     <NavigationContainer > 
     <View style={styles.appContainer}>
-      <Stack.Navigator >
+    <Stack.Navigator initialRouteName='Splash' screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="Splash"
           component={CustomSplash}

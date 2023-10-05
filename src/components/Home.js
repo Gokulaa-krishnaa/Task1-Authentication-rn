@@ -3,19 +3,38 @@ import { Text, TextInput, SafeAreaView, StyleSheet, View, TouchableOpacity, Imag
 import LinearGradient from 'react-native-linear-gradient';
 import { BlurView } from "@react-native-community/blur";
 import SQLite from 'react-native-sqlite-storage';
+import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// const axios = require('axios');
+// import axios from 'axios';
 
-const db = SQLite.openDatabase({
-    name: 'mydb',
-    location: 'default'
-  },
-  () => {
-      console.log("Database connected!")
-  }, //on success
-  error => console.log("Database error", error) //on error
-  )
-  
+const fetchMData = async () => {
+  const options = {
+    method: "GET",
+    url: "https://moviesminidatabase.p.rapidapi.com/movie/byGen/Action/",
+    headers: {
+      "X-RapidAPI-Key": "b3d15e4c89mshfd4952e843a7683p11c7d8jsn434a16388e67",
+      "X-RapidAPI-Host": "moviesminidatabase.p.rapidapi.com",
+    },
+    params: {
+      pageSize: 10, // Set the limit
+    },
+  };
+  try {
+    const response = await axios.request(options);
+    console.log(response.data.results);
+    return response.data.results
+    // setMovieDetails(response.data)
+    // Handle the data here
+  } catch (error) {
+    console.error(error);
+    // Handle errors here
+  }
+};
+// Call the fetchData function when needed
+
+
 
 
 const deleteUser = (id) => {
@@ -45,7 +64,11 @@ function Home({ navigation }) {
 const [isLoading, setIsLoading] = useState(true);
   
 const [userDetails,setUserDetails]= useState();
- 
+const mdata = fetchMData();
+const [movieDetails, setMovieDetails] = useState([]);
+
+
+
 
 const getUserDetailAsync = async (userId) => {
  
@@ -78,6 +101,7 @@ useEffect(() => {
       setIsLoading(false); // Set isLoading to false on error as well
     }
   };fetchData();
+  console.log(typeof(mdata),mdata)
 },[]);
 
   // const listAllUsers = () => {
@@ -155,6 +179,9 @@ useEffect(() => {
       <Text style={styles.title2}>Welcome,</Text>
       
       <Text style={styles.title1}> {userDetails.name}</Text>
+      {movieDetails && movieDetails.map((item, index) => (
+        <Text key={index}>{item}</Text>
+      ))}
 
     </SafeAreaView>
   )
