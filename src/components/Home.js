@@ -1,38 +1,27 @@
 import React, { cloneElement, useState ,useEffect} from "react";
-import { Text, TextInput, SafeAreaView, StyleSheet, View, TouchableOpacity, Image } from "react-native";
+import { Text, TextInput, SafeAreaView, StyleSheet, View, TouchableOpacity, Image, FlatList } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { BlurView } from "@react-native-community/blur";
 import SQLite from 'react-native-sqlite-storage';
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MovieList from "./MovieList";
 
-// const axios = require('axios');
-// import axios from 'axios';
 
-const fetchMData = async () => {
-  const options = {
-    method: "GET",
-    url: "https://moviesminidatabase.p.rapidapi.com/movie/byGen/Action/",
-    headers: {
-      "X-RapidAPI-Key": "b3d15e4c89mshfd4952e843a7683p11c7d8jsn434a16388e67",
-      "X-RapidAPI-Host": "moviesminidatabase.p.rapidapi.com",
-    },
-    params: {
-      pageSize: 10, // Set the limit
-    },
-  };
-  try {
-    const response = await axios.request(options);
-    console.log(response.data.results);
-    return response.data.results
-    // setMovieDetails(response.data)
-    // Handle the data here
-  } catch (error) {
-    console.error(error);
-    // Handle errors here
-  }
+const options = {
+  method: 'GET',
+  url: 'https://api.themoviedb.org/3/movie/popular', // Example endpoint for popular movies
+  params: {
+    api_key: "69896fca19924108d9c9bb95a3354bcc", // Add your TMDb API key here
+    page: 1, // Page number (start with 1)
+    page_size: 10, // Number of results per page
+  },
+  headers: {
+    accept: 'application/json',
+    Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2OTg5NmZjYTE5OTI0MTA4ZDljOWJiOTVhMzM1NGJjYyIsInN1YiI6IjY1MjM4OGJhMGNiMzM1MTZmZDQ2MTJlNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.D5iC1FU0-HoWzR_xolP9WIAZ9OTKyy2GbXOxu-iOvyk`,
+  },
 };
-// Call the fetchData function when needed
+
 
 
 
@@ -58,13 +47,11 @@ const deletetable = () => {
 
 function Home({ navigation }) {
 
-// const { userId } = route.params;
-
   
 const [isLoading, setIsLoading] = useState(true);
   
 const [userDetails,setUserDetails]= useState();
-const mdata = fetchMData();
+
 const [movieDetails, setMovieDetails] = useState([]);
 
 
@@ -75,7 +62,7 @@ const getUserDetailAsync = async (userId) => {
   try {
     const userToken = await AsyncStorage.getItem('userDetails');
     if (userToken !== null) {
-      console.log('User Token:', JSON.parse(userToken).DOB);
+      // console.log('User Token:', JSON.parse(userToken).DOB);
       
       await setUserDetails(JSON.parse(userToken))
      
@@ -101,53 +88,20 @@ useEffect(() => {
       setIsLoading(false); // Set isLoading to false on error as well
     }
   };fetchData();
-  console.log(typeof(mdata),mdata)
+
+  
+  axios
+  .request(options)
+  .then(function (response) {
+    // console.log(response.data.results);
+    setMovieDetails(response.data.results)
+  })
+  .catch(function (error) {
+    console.error(error);
+  });
 },[]);
 
-  // const listAllUsers = () => {
-  //     const sql = "SELECT * FROM users";
-  //     db.transaction(
-  //       (tx) => {
-  //         tx.executeSql(
-  //           sql,
-  //           [],
-  //           (_, resultSet) => {
-  //             for (let i = 5; i < resultSet.rows.length; i++) {
-  //               console.log(resultSet.rows.item(i));
-  //             }
-  //           },
-  //           (error) => {
-  //             console.log('List user error', error);
-  //           }
-  //         );
-  //       }
-  //     );
-  //   };
-
-    // const [shouldRender, setShouldRender] = useState(false);
-
-  // useEffect(() => {
-  //   // Your async logic here
-  //   setTimeout(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const userdetails = await getUserDetailAsync(userId);
-  //         setUserDetails(userdetails);
-  //         setUserDOB(userdetails.DOB); 
-  //         setUserName(userdetails.name); 
-  //         setUserGender(userdetails.gender); 
-  //         setUserEmail(userdetails.email); 
-  //       } catch (error) {
-  //         console.log("Error fetching user details:", error);
-  //       }
-      
-    
-  //     fetchData();
-  //   }
-  //     setShouldRender(true);
-  //   }, 1000); // Simulate an async operation
-
-  // }, []);
+ 
 
   if (isLoading) {
     // Render a loading indicator or message until data is available
@@ -176,12 +130,14 @@ useEffect(() => {
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
-      <Text style={styles.title2}>Welcome,</Text>
+      <Text style={styles.title2}>Hi,</Text>
       
-      <Text style={styles.title1}> {userDetails.name}</Text>
-      {movieDetails && movieDetails.map((item, index) => (
-        <Text key={index}>{item}</Text>
-      ))}
+      <Text style={styles.title1}>{userDetails.name}</Text>
+
+      <Text style={styles.description}>Here are the hot movie suggestions for you</Text>
+
+      <MovieList movieDetails={movieDetails}/>
+      
 
     </SafeAreaView>
   )
@@ -214,7 +170,7 @@ const styles = StyleSheet.create({
   title2: {
     fontSize: 35,
     color: '#ffffff',
-    marginTop: 50,
+    marginTop: 20,
   },
   container: {
     padding: 30,
@@ -234,11 +190,12 @@ const styles = StyleSheet.create({
     flex: 4,
   },
   description: {
-    fontSize: 18,
-    borderRightColor: '#00C9C8',
-    textAlign: 'right',
+    fontSize: 20,
+    borderLeftColor: '#00C9C8',
+    textAlign: 'left',
     color: "#ffffff",
-    paddingRight: 15,
+    paddingLeft: 13,
+    marginVertical:10,
     borderWidth: 5,
   },
   imageContainer: {
